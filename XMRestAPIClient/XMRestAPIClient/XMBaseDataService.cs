@@ -17,7 +17,7 @@ namespace XMRestAPIClient
     /// <seealso cref="XMRestAPIClient.IXMDataService{T}" />
     public class XMBaseDataService<T> : IXMDataService<T> where T : IXMModel
     {
-        protected virtual string ApiName { get; set; }
+        protected virtual string ApiName { get; }
         /// <summary>
         /// Deletes the item.
         /// </summary>
@@ -197,7 +197,7 @@ namespace XMRestAPIClient
         /// <param name="headers">The headers.</param>
         /// <param name="timeout">The timeout.</param>
         /// <returns>Instance of the <see cref="XMRestResult"/> class.</returns>
-        protected async Task<XMRestResult> PostToDataServer(string jsonContent, string url, Dictionary<string, string> headers = null, int timeout = 20)
+        protected virtual async Task<XMRestResult> PostToDataServer(string jsonContent, string url, Dictionary<string, string> headers = null, int timeout = 20)
         {
             try
             {
@@ -216,7 +216,7 @@ namespace XMRestAPIClient
         /// <param name="ConnectionUrl">The connection URL.</param>
         /// <param name="headers">The headers.</param>
         /// <returns>Instance of the <see cref="XMRestResult"/> class.</returns>
-        protected async Task<XMRestResult> GetFromDataServer(string jsonContent, string url, Dictionary<string, string> headers = null, int timeout = 20)
+        protected virtual async Task<XMRestResult> GetFromDataServer(string jsonContent, string url, Dictionary<string, string> headers = null, int timeout = 20)
         {
             try
             {
@@ -228,7 +228,7 @@ namespace XMRestAPIClient
             }
         }
 
-        protected async Task<XMRestResult> DeleteFromDataServer(string jsonContent, string url, Dictionary<string, string> headers = null, int timeout = 20)
+        protected virtual async Task<XMRestResult> DeleteFromDataServer(string jsonContent, string url, Dictionary<string, string> headers = null, int timeout = 20)
         {
             try
             {
@@ -259,7 +259,7 @@ namespace XMRestAPIClient
                         request.Content = content;
                     }
 
-                    if (string.IsNullOrEmpty(XMRestSettings.AuthorizationKeyHeaderValue))
+                    if (string.IsNullOrEmpty(XMRestSettings.AuthorizationKeyHeaderValue) == false)
                     {
                         request.Headers.Add(XMRestSettings.AuthorizationKeyHeaderName, XMRestSettings.AuthorizationKeyHeaderValue);
                     }
