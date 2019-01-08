@@ -7,17 +7,17 @@
     <Company>Xamabrouk</Company>
     <Product>XMRestAPIClient</Product>
     <Description>Provides a full and clean solution to POST, GET,PUT or DELETE data to server using a Rest API.</Description>
-    <Copyright>Copyright (c) Mabrouk Mahdhi 2018</Copyright>
+    <Copyright>Copyright (c) Mabrouk Mahdhi 2019</Copyright>
     <PackageIconUrl>http://xamabrouk.com/images/ic_clean.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/MabroukENG/XMRestAPIClient</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MabroukENG/XMRestAPIClient</RepositoryUrl>
-    <AssemblyVersion>1.0.0.6</AssemblyVersion>
-    <FileVersion>1.0.0.6</FileVersion>
-    <Version>1.0.6</Version>
+    <AssemblyVersion>1.0.0.7</AssemblyVersion>
+    <FileVersion>1.0.0.7</FileVersion>
+    <Version>1.0.7</Version>
     <PackageId>Xamabrouk.RestHelper</PackageId>
-    <PackageReleaseNotes>GET, POST and DELETE mothed are virtual now.</PackageReleaseNotes>
+    <PackageReleaseNotes>Possibility to change the API Url for each request!</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl>https://github.com/MabroukENG/Xamabrouk/blob/master/LICENSE</PackageLicenseUrl>
     <PackageTags>.NET API Rest Client GET POST Xamarin Core</PackageTags>
   </PropertyGroup>
