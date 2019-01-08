@@ -12,7 +12,7 @@ namespace ConsoleTests
         static void Main(string[] args)
         {
             SetAPISettings();
-            var service = new RawMaterialService();
+            var service = new SymbolService();
             Console.ReadKey();
         }
         private static void SetAPISettings()
@@ -37,16 +37,51 @@ namespace ConsoleTests
 
     }
 
+    public class Symbol : IXMModel
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Name { get; set; }
+        public int SymbolNumber { get; set; }
+        public string Description { get; set; }
+        public string SymbolFileName { get; set; }
+        public double SymbolSize { get; set; }
+
+
+    }
+
+    public class SymbolService : XMBaseDataService<Symbol>
+    {
+        protected override string ApiName => "symbols";
+        public SymbolService()
+        {
+            SaveItem(new Symbol()
+            {
+                Id = "6be58520-e45e-476d-89f0-c05f3c8e86e6",
+                Description = "No desk",
+                Name = "Test mabrouk 3",
+                SymbolFileName = "no file",
+                SymbolNumber = 66,
+                SymbolSize = 60
+            }).ContinueWith(p => { });
+
+        }
+    }
+
     public class RawMaterialService : XMBaseDataService<RawMaterial>
     {
         protected override string ApiName => "rawMaterials";
         public RawMaterialService()
         {
-            this.GetAllItems().ContinueWith(p =>
-            {
-                var item = p.Result;
-                var str = ";";
-            });
+            GetData();
+
+        }
+
+        private async void GetData()
+        {
+            var lst = await this.GetAllItems();
+            var item = lst.FirstOrDefault();
+            item.SupplierPartNumber = "333";
+            var res = await SaveItem(item);
         }
     }
 }

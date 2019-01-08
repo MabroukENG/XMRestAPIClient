@@ -18,6 +18,22 @@ namespace XMRestAPIClient
     public class XMBaseDataService<T> : IXMDataService<T> where T : IXMModel
     {
         protected virtual string ApiName { get; }
+
+        /// <summary>
+        /// Gets the API URL.
+        /// </summary>
+        /// <param name="httpMethod">The HTTP method.</param>
+        /// <param name="id">The identifier.</param>
+        /// <param name="apiParams">The API parameters.</param>
+        /// <returns></returns>
+        public virtual Uri GetApiUrl(HttpMethod httpMethod, string id = "", params Tuple<string, string>[] apiParams)
+        {
+            var _version = XMRestSettings.ApiVersion == -1 ? "" : $"/v{XMRestSettings.ApiVersion}";
+            var _id = string.IsNullOrEmpty(id) ? "/" : $"/{id}";
+            var _uri = new Uri(new Uri($"{XMRestSettings.BaseUrl}{(XMRestSettings.BaseUrl.EndsWith("/") ? "" : "/")}api{_version}/{ApiName}{_id}").ToString());
+            return _uri;
+        }
+
         /// <summary>
         /// Deletes the item.
         /// </summary>
@@ -48,7 +64,8 @@ namespace XMRestAPIClient
             {
                 if (string.IsNullOrEmpty(id))
                     return false;
-                var _url = new Uri(new Uri($"{XMRestSettings.BaseUrl}{(XMRestSettings.BaseUrl.EndsWith("/") ? "" : "/")}api/v{XMRestSettings.ApiVersion}/{ApiName}/{id}").ToString());
+                var _url = GetApiUrl(HttpMethod.Delete, id);
+                //new Uri(new Uri($"{XMRestSettings.BaseUrl}{(XMRestSettings.BaseUrl.EndsWith("/") ? "" : "/")}api/v{XMRestSettings.ApiVersion}/{ApiName}/{id}").ToString());
                 var deleteResult = await DeleteFromDataServer(string.Empty, _url.ToString());
                 return deleteResult.Type == XMRestResultType.Success;
             }
@@ -86,7 +103,7 @@ namespace XMRestAPIClient
         {
             try
             {
-                var _url = new Uri(new Uri($"{XMRestSettings.BaseUrl}{(XMRestSettings.BaseUrl.EndsWith("/") ? "" : "/")}api/v{XMRestSettings.ApiVersion}/{ApiName}{(page != -1 ? $"/page_{page}" : "")}").ToString());
+                var _url = GetApiUrl(HttpMethod.Get);
                 var getAllResult = await GetFromDataServer(string.Empty, _url.ToString());
                 return JsonConvert.DeserializeObject<List<T>>(getAllResult?.JsonData);
             }
@@ -108,7 +125,7 @@ namespace XMRestAPIClient
             {
                 if (string.IsNullOrEmpty(id))
                     return default(T);
-                var _url = new Uri(new Uri($"{XMRestSettings.BaseUrl}{(XMRestSettings.BaseUrl.EndsWith("/") ? "" : "/")}api/v{XMRestSettings.ApiVersion}/{ApiName}/{id}").ToString());
+                var _url = GetApiUrl(HttpMethod.Get, id);
                 var getResult = await GetFromDataServer(string.Empty, _url.ToString());
                 return JsonConvert.DeserializeObject<T>(getResult?.JsonData);
             }
@@ -177,17 +194,24 @@ namespace XMRestAPIClient
 
                 if (string.IsNullOrEmpty(item.Id) == true)
                     item.Id = Guid.NewGuid().ToString();
-
-                var _url = new Uri(new Uri($"{XMRestSettings.BaseUrl}{(XMRestSettings.BaseUrl.EndsWith("/") ? "" : "/")}api/v{XMRestSettings.ApiVersion}/{ApiName}").ToString());
+                
                 var jsonRequest = JsonConvert.SerializeObject(item);
-                var postResult = await PostToDataServer(jsonRequest, _url.ToString());
-                return postResult.Type == XMRestResultType.Success;
+                if (string.IsNullOrEmpty((await GetItem(item.Id))?.Id))
+                {
+                    var _postUrl = GetApiUrl(HttpMethod.Post);
+                    var postResult = await PostToDataServer(jsonRequest, _postUrl.ToString());
+                    return postResult.Type == XMRestResultType.Success;
+                }
+                var _putUrl = GetApiUrl(HttpMethod.Put);
+                var putResult = await PutToDataServer(jsonRequest, _putUrl.ToString());
+                return putResult.Type == XMRestResultType.Success;
             }
             catch (Exception ex)
             {
                 return false;
             }
         }
+
 
         /// <summary>
         /// Posts to data server.
@@ -202,6 +226,18 @@ namespace XMRestAPIClient
             try
             {
                 return await RestRequest(jsonContent, url, headers, timeout, HttpMethod.Post);
+            }
+            catch (Exception ex)
+            {
+                return new XMRestResult { Message = ex.Message, Type = XMRestResultType.Error };
+            }
+        }
+
+        protected virtual async Task<XMRestResult> PutToDataServer(string jsonContent, string url, Dictionary<string, string> headers = null, int timeout = 20)
+        {
+            try
+            {
+                return await RestRequest(jsonContent, url, headers, timeout, HttpMethod.Put);
             }
             catch (Exception ex)
             {
