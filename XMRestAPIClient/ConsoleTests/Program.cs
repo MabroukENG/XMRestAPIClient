@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using XMRestAPIClient;
@@ -60,12 +61,16 @@ namespace ConsoleTests
                 Description = "No desk",
                 Name = "Test mabrouk 3",
                 SymbolFileName = "no file",
-                SymbolNumber = 66,
+                SymbolNumber = 25,
                 SymbolSize = 60
-            }).ContinueWith(p => { });
+            }).ContinueWith(p => {
+
+                GetAllItems().ContinueWith(i=> { });
+            });
 
         }
-    }
+
+           }
 
     public class RawMaterialService : XMBaseDataService<RawMaterial>
     {
