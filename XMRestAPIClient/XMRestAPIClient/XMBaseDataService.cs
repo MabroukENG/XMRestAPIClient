@@ -194,7 +194,7 @@ namespace XMRestAPIClient
 
                 if (string.IsNullOrEmpty(item.Id) == true)
                     item.Id = Guid.NewGuid().ToString();
-                
+
                 var jsonRequest = JsonConvert.SerializeObject(item);
                 if (string.IsNullOrEmpty((await GetItem(item.Id))?.Id))
                 {
@@ -320,5 +320,113 @@ namespace XMRestAPIClient
                 return new XMRestResult { Message = ex.Message, Type = XMRestResultType.Error };
             }
         }
+
+        #region ASYNCHRONOUS
+        /// <summary>
+        /// Gets the item asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        public T GetItemAsync(string id)
+        {
+            return Task.Run(async () =>
+             {
+                 return await GetItem(id);
+             }).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Gets the item asynchronous.
+        /// </summary>
+        /// <param name="predicate">The predicate.</param>
+        /// <param name="page">The page.</param>
+        /// <returns></returns>
+        public T GetItemAsync(Func<T, bool> predicate, int page = -1)
+        {
+            return Task.Run(async () =>
+            {
+                return await GetItem(predicate, page);
+            }).GetAwaiter().GetResult();
+        }
+
+
+        /// <summary>
+        /// Gets all items asynchronous.
+        /// </summary>
+        /// <param name="page">The page.</param>
+        /// <returns></returns>
+        public IEnumerable<T> GetAllItemsAsync(int page = -1)
+        {
+            return Task.Run(async () =>
+            {
+                return await GetAllItems(page);
+            }).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Gets the items asynchronous.
+        /// </summary>
+        /// <param name="predicate">The predicate.</param>
+        /// <param name="page">The page.</param>
+        /// <returns></returns>
+        public IEnumerable<T> GetItemsAsync(Func<T, bool> predicate, int page = -1)
+        {
+            return Task.Run(async () =>
+            {
+                return await GetItems(predicate, page);
+            }).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Updates or saves new item asynchronous.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        public bool SaveItemAsync(T item)
+        {
+            return Task.Run(async () =>
+            {
+                return await SaveItem(item);
+            }).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Deletes the item asynchronous.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        public bool DeleteItemAsync(T item)
+        {
+            return Task.Run(async () =>
+            {
+                return await DeleteItem(item);
+            }).GetAwaiter().GetResult();
+        }
+        /// <summary>
+        /// Deletes the item asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        public bool DeleteItemAsync(string id)
+        {
+            return Task.Run(async () =>
+            {
+                return await DeleteItem(id);
+            }).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Deletes the item asynchronous.
+        /// </summary>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns></returns>
+        public bool DeleteItemAsync(Func<T, bool> predicate)
+        {
+            return Task.Run(async () =>
+            {
+                return await DeleteItem(predicate);
+            }).GetAwaiter().GetResult();
+        }
+        #endregion
     }
 }

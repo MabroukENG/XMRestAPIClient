@@ -58,6 +58,68 @@ namespace XMRestAPIClient
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
         Task<bool> DeleteItem(Func<T, bool> predicate);
+
+
+        // ASYNC METHODS 
+
+        /// <summary>
+        /// Gets the item asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        T GetItemAsync(string id);
+
+        /// <summary>
+        /// Gets the item asynchronous.
+        /// </summary>
+        /// <param name="predicate">The predicate.</param>
+        /// <param name="page">The page.</param>
+        /// <returns></returns>
+        T GetItemAsync(Func<T, bool> predicate, int page = -1);
+
+        /// <summary>
+        /// Gets all items asynchronous.
+        /// </summary>
+        /// <param name="page">The page.</param>
+        /// <returns></returns>
+        IEnumerable<T> GetAllItemsAsync(int page = -1);
+
+        /// <summary>
+        /// Gets the items asynchronous.
+        /// </summary>
+        /// <param name="predicate">The predicate.</param>
+        /// <param name="page">The page.</param>
+        /// <returns></returns>
+        IEnumerable<T> GetItemsAsync(Func<T, bool> predicate, int page = -1);
+
+
+        /// <summary>
+        /// Saves the item asynchronous.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        bool SaveItemAsync(T item);
+
+        /// <summary>
+        /// Deletes the item asynchronous.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        bool DeleteItemAsync(T item);
+
+        /// <summary>
+        /// Deletes the item asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        bool DeleteItemAsync(string id);
+
+        /// <summary>
+        /// Deletes the item asynchronous.
+        /// </summary>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns></returns>
+        bool DeleteItemAsync(Func<T, bool> predicate);
     }
 }
 

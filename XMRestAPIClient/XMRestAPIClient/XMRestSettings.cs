@@ -4,6 +4,9 @@ using System.Text;
 
 namespace XMRestAPIClient
 {
+    /// <summary>
+    /// XMRestSettings.
+    /// </summary>
     public class XMRestSettings
     {
         /// <summary>
