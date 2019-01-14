@@ -11,11 +11,11 @@
     <PackageIconUrl>http://xamabrouk.com/images/ic_clean.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/MabroukENG/XMRestAPIClient</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MabroukENG/XMRestAPIClient</RepositoryUrl>
-    <AssemblyVersion>1.0.0.7</AssemblyVersion>
-    <FileVersion>1.0.0.7</FileVersion>
-    <Version>1.0.8</Version>
+    <AssemblyVersion>1.0.0.11</AssemblyVersion>
+    <FileVersion>1.0.0.11</FileVersion>
+    <Version>1.1.2</Version>
     <PackageId>Xamabrouk.RestHelper</PackageId>
-    <PackageReleaseNotes>Async methods added</PackageReleaseNotes>
+    <PackageReleaseNotes>- Test method added</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl>https://github.com/MabroukENG/Xamabrouk/blob/master/LICENSE</PackageLicenseUrl>

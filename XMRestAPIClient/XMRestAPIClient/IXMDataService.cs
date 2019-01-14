@@ -16,110 +16,110 @@ namespace XMRestAPIClient
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        Task<T> GetItem(string id);
+        Task<T> GetItemAsync(string id);
         /// <summary>
         /// Gets the item.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
-        Task<T> GetItem(Func<T, bool> predicate, int page = -1);
+        Task<T> GetItemAsync(Func<T, bool> predicate, int page = -1);
         /// <summary>
         /// Gets all items.
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<T>> GetAllItems(int page = -1);
+        Task<IEnumerable<T>> GetAllItemsAsync(int page = -1);
         /// <summary>
         /// Gets the items.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
-        Task<IEnumerable<T>> GetItems(Func<T, bool> predicate, int page = -1);
+        Task<IEnumerable<T>> GetItemsAsync(Func<T, bool> predicate, int page = -1);
         /// <summary>
         /// Saves the item.
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns></returns>
-        Task<bool> SaveItem(T item);
+        Task<bool> SaveItemAsync(T item);
         /// <summary>
         /// Deletes the item.
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns></returns>
-        Task<bool> DeleteItem(T item);
+        Task<bool> DeleteItemAsync(T item);
         /// <summary>
         /// Deletes the item.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        Task<bool> DeleteItem(string id);
+        Task<bool> DeleteItemAsync(string id);
         /// <summary>
         /// Deletes the item.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
-        Task<bool> DeleteItem(Func<T, bool> predicate);
+        Task<bool> DeleteItemAsync(Func<T, bool> predicate);
 
 
         // ASYNC METHODS 
 
         /// <summary>
-        /// Gets the item asynchronous.
+        /// Gets the item.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        T GetItemAsync(string id);
+        T GetItem(string id);
 
         /// <summary>
-        /// Gets the item asynchronous.
+        /// Gets the item.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <param name="page">The page.</param>
         /// <returns></returns>
-        T GetItemAsync(Func<T, bool> predicate, int page = -1);
+        T GetItem(Func<T, bool> predicate, int page = -1);
 
         /// <summary>
-        /// Gets all items asynchronous.
+        /// Gets all items.
         /// </summary>
         /// <param name="page">The page.</param>
         /// <returns></returns>
-        IEnumerable<T> GetAllItemsAsync(int page = -1);
+        IEnumerable<T> GetAllItems(int page = -1);
 
         /// <summary>
-        /// Gets the items asynchronous.
+        /// Gets the items.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <param name="page">The page.</param>
         /// <returns></returns>
-        IEnumerable<T> GetItemsAsync(Func<T, bool> predicate, int page = -1);
+        IEnumerable<T> GetItems(Func<T, bool> predicate, int page = -1);
 
 
         /// <summary>
-        /// Saves the item asynchronous.
+        /// Saves the item.
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns></returns>
-        bool SaveItemAsync(T item);
+        bool SaveItem(T item);
 
         /// <summary>
-        /// Deletes the item asynchronous.
+        /// Deletes the item.
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns></returns>
-        bool DeleteItemAsync(T item);
+        bool DeleteItem(T item);
 
         /// <summary>
-        /// Deletes the item asynchronous.
+        /// Deletes the item.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        bool DeleteItemAsync(string id);
+        bool DeleteItem(string id);
 
         /// <summary>
-        /// Deletes the item asynchronous.
+        /// Deletes the item.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
-        bool DeleteItemAsync(Func<T, bool> predicate);
+        bool DeleteItem(Func<T, bool> predicate);
     }
 }
 

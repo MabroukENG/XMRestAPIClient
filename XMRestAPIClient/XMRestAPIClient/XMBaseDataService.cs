@@ -17,7 +17,66 @@ namespace XMRestAPIClient
     /// <seealso cref="XMRestAPIClient.IXMDataService{T}" />
     public class XMBaseDataService<T> : IXMDataService<T> where T : IXMModel
     {
-        protected virtual string ApiName { get; }
+        /// <summary>
+        /// Gets the name of the API.
+        /// </summary>
+        /// <value>
+        /// The name of the API.
+        /// </value>
+        public virtual string ApiName { get; }
+
+        /// <summary>
+        /// Gets the name of the authorization header. 'Authorization' by default.
+        /// </summary>
+        /// <value>
+        /// The name of the authorization header.
+        /// </value>
+        public virtual string AuthorizationHeaderName { get; } = "Authorization";
+
+        /// <summary>
+        /// Gets or sets the authorization token.
+        /// </summary>
+        /// <value>
+        /// The authorization token.
+        /// </value>
+        public virtual string AuthorizationToken { get; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the base API URL.
+        /// </summary>
+        /// <value>
+        /// The base API URL.
+        /// </value>
+        public virtual string BaseAPIUrl { get; } = "http://localhost:8080/";
+
+        /// <summary>
+        /// The API version
+        /// </summary>
+        public virtual int ApiVersion { get; } = 1;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="XMBaseDataService{T}"/> class.
+        /// </summary>
+        public XMBaseDataService()
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="XMBaseDataService{T}"/> class.
+        /// </summary>
+        /// <param name="baseUrl">The base URL.</param>
+        /// <param name="apiVersion">The API version.</param>
+        /// <param name="authorizationToken">The authorization token.</param>
+        public XMBaseDataService(string baseUrl, int apiVersion, string authorizationToken) : this()
+        {
+            BaseAPIUrl = baseUrl;
+            ApiVersion = apiVersion;
+            AuthorizationToken = authorizationToken;
+        }
+
+
+
 
         /// <summary>
         /// Gets the API URL.
@@ -28,9 +87,9 @@ namespace XMRestAPIClient
         /// <returns></returns>
         public virtual Uri GetApiUrl(HttpMethod httpMethod, string id = "", params Tuple<string, string>[] apiParams)
         {
-            var _version = XMRestSettings.ApiVersion == -1 ? "" : $"/v{XMRestSettings.ApiVersion}";
+            var _version = ApiVersion == -1 ? "" : $"/v{ApiVersion}";
             var _id = string.IsNullOrEmpty(id) ? "/" : $"/{id}";
-            var _uri = new Uri(new Uri($"{XMRestSettings.BaseUrl}{(XMRestSettings.BaseUrl.EndsWith("/") ? "" : "/")}api{_version}/{ApiName}{_id}").ToString());
+            var _uri = new Uri(new Uri($"{BaseAPIUrl}{(BaseAPIUrl.EndsWith("/") ? "" : "/")}api{_version}/{ApiName}{_id}").ToString());
             return _uri;
         }
 
@@ -40,11 +99,11 @@ namespace XMRestAPIClient
         /// <param name="item">The item.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public virtual async Task<bool> DeleteItem(T item)
+        public virtual async Task<bool> DeleteItemAsync(T item)
         {
             try
             {
-                return await DeleteItem(item.Id);
+                return await DeleteItemAsync(item.Id);
             }
             catch (Exception ex)
             {
@@ -58,14 +117,14 @@ namespace XMRestAPIClient
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public virtual async Task<bool> DeleteItem(string id)
+        public virtual async Task<bool> DeleteItemAsync(string id)
         {
             try
             {
                 if (string.IsNullOrEmpty(id))
                     return false;
                 var _url = GetApiUrl(HttpMethod.Delete, id);
-                //new Uri(new Uri($"{XMRestSettings.BaseUrl}{(XMRestSettings.BaseUrl.EndsWith("/") ? "" : "/")}api/v{XMRestSettings.ApiVersion}/{ApiName}/{id}").ToString());
+                //new Uri(new Uri($"{BaseUrl}{(BaseUrl.EndsWith("/") ? "" : "/")}api/v{ApiVersion}/{ApiName}/{id}").ToString());
                 var deleteResult = await DeleteFromDataServer(string.Empty, _url.ToString());
                 return deleteResult.Type == XMRestResultType.Success;
             }
@@ -81,12 +140,12 @@ namespace XMRestAPIClient
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public virtual async Task<bool> DeleteItem(Func<T, bool> predicate)
+        public virtual async Task<bool> DeleteItemAsync(Func<T, bool> predicate)
         {
             try
             {
-                var item = await GetItem(predicate);
-                return await DeleteItem(item.Id);
+                var item = await GetItemAsync(predicate);
+                return await DeleteItemAsync(item.Id);
             }
             catch (Exception ex)
             {
@@ -99,13 +158,13 @@ namespace XMRestAPIClient
         /// </summary>
         /// <param name="page">The page. </param>
         /// <returns></returns>
-        public virtual async Task<IEnumerable<T>> GetAllItems(int page = -1)
+        public virtual async Task<IEnumerable<T>> GetAllItemsAsync(int page = -1)
         {
             try
             {
                 var _url = GetApiUrl(HttpMethod.Get);
                 var getAllResult = await GetFromDataServer(string.Empty, _url.ToString());
-                return JsonConvert.DeserializeObject<List<T>>(getAllResult?.JsonData);
+                return DeserializeData<List<T>>(getAllResult?.JsonData);
             }
             catch (Exception ex)
             {
@@ -118,8 +177,7 @@ namespace XMRestAPIClient
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public virtual async Task<T> GetItem(string id)
+        public virtual async Task<T> GetItemAsync(string id)
         {
             try
             {
@@ -127,7 +185,7 @@ namespace XMRestAPIClient
                     return default(T);
                 var _url = GetApiUrl(HttpMethod.Get, id);
                 var getResult = await GetFromDataServer(string.Empty, _url.ToString());
-                return JsonConvert.DeserializeObject<T>(getResult?.JsonData);
+                return DeserializeData<T>(getResult?.JsonData);
             }
             catch (Exception ex)
             {
@@ -141,11 +199,11 @@ namespace XMRestAPIClient
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public virtual async Task<T> GetItem(Func<T, bool> predicate, int page = -1)
+        public virtual async Task<T> GetItemAsync(Func<T, bool> predicate, int page = -1)
         {
             try
             {
-                var data = await GetAllItems(page);
+                var data = await GetAllItemsAsync(page);
                 if (data == null || data.Any() == false)
                     return default(T);
 
@@ -163,11 +221,11 @@ namespace XMRestAPIClient
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public virtual async Task<IEnumerable<T>> GetItems(Func<T, bool> predicate, int page = -1)
+        public virtual async Task<IEnumerable<T>> GetItemsAsync(Func<T, bool> predicate, int page = -1)
         {
             try
             {
-                var data = await GetAllItems(page);
+                var data = await GetAllItemsAsync(page);
                 if (data == null || data.Any() == false)
                     return null;
 
@@ -185,7 +243,7 @@ namespace XMRestAPIClient
         /// <param name="item">The item.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public virtual async Task<bool> SaveItem(T item)
+        public virtual async Task<bool> SaveItemAsync(T item)
         {
             try
             {
@@ -195,8 +253,8 @@ namespace XMRestAPIClient
                 if (string.IsNullOrEmpty(item.Id) == true)
                     item.Id = Guid.NewGuid().ToString();
 
-                var jsonRequest = JsonConvert.SerializeObject(item);
-                if (string.IsNullOrEmpty((await GetItem(item.Id))?.Id))
+                var jsonRequest = SerializeData(item);
+                if (string.IsNullOrEmpty((await GetItemAsync(item.Id))?.Id))
                 {
                     var _postUrl = GetApiUrl(HttpMethod.Post);
                     var postResult = await PostToDataServer(jsonRequest, _postUrl.ToString());
@@ -233,6 +291,14 @@ namespace XMRestAPIClient
             }
         }
 
+        /// <summary>
+        /// Puts to data server.
+        /// </summary>
+        /// <param name="jsonContent">Content of the json.</param>
+        /// <param name="url">The URL.</param>
+        /// <param name="headers">The headers.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns></returns>
         protected virtual async Task<XMRestResult> PutToDataServer(string jsonContent, string url, Dictionary<string, string> headers = null, int timeout = 20)
         {
             try
@@ -249,9 +315,10 @@ namespace XMRestAPIClient
         /// Gets from data server.
         /// </summary>
         /// <param name="jsonContent">Content of the json.</param>
-        /// <param name="ConnectionUrl">The connection URL.</param>
+        /// <param name="url">The URL.</param>
         /// <param name="headers">The headers.</param>
-        /// <returns>Instance of the <see cref="XMRestResult"/> class.</returns>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns></returns>
         protected virtual async Task<XMRestResult> GetFromDataServer(string jsonContent, string url, Dictionary<string, string> headers = null, int timeout = 20)
         {
             try
@@ -264,6 +331,14 @@ namespace XMRestAPIClient
             }
         }
 
+        /// <summary>
+        /// Deletes from data server.
+        /// </summary>
+        /// <param name="jsonContent">Content of the json.</param>
+        /// <param name="url">The URL.</param>
+        /// <param name="headers">The headers.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns></returns>
         protected virtual async Task<XMRestResult> DeleteFromDataServer(string jsonContent, string url, Dictionary<string, string> headers = null, int timeout = 20)
         {
             try
@@ -276,155 +351,194 @@ namespace XMRestAPIClient
             }
         }
 
+        /// <summary>
+        /// Rests the request.
+        /// </summary>
+        /// <param name="jsonContent">Content of the json.</param>
+        /// <param name="url">The URL.</param>
+        /// <param name="headers">The headers.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <param name="method">The method.</param>
+        /// <returns></returns>
         private async Task<XMRestResult> RestRequest(string jsonContent, string url, Dictionary<string, string> headers, int timeout, HttpMethod method)
         {
-            try
+            using (HttpClient client = new HttpClient())
             {
-                using (HttpClient client = new HttpClient())
+                client.Timeout = new TimeSpan(0, 0, 0, timeout);
+                var request = new HttpRequestMessage()
                 {
-                    client.Timeout = new TimeSpan(0, 0, 0, timeout);
-                    var request = new HttpRequestMessage()
-                    {
-                        RequestUri = new Uri(url),
-                        Method = method
-                    };
+                    RequestUri = new Uri(url),
+                    Method = method
+                };
 
-                    if (string.IsNullOrEmpty(jsonContent) == false)
-                    {
-                        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-                        request.Content = content;
-                    }
-
-                    if (string.IsNullOrEmpty(XMRestSettings.AuthorizationKeyHeaderValue) == false)
-                    {
-                        request.Headers.Add(XMRestSettings.AuthorizationKeyHeaderName, XMRestSettings.AuthorizationKeyHeaderValue);
-                    }
-                    if (headers != null && headers.Any())
-                    {
-                        headers.ToList().ForEach(h => request.Headers.Add(h.Key, h.Value));
-                    }
-
-                    var response = await client.SendAsync(request);
-                    var dataResult = response.Content.ReadAsStringAsync().Result;
-                    //var result = JsonConvert.DeserializeObject<ConnectionResult<T>>(dataResult);
-                    return new XMRestResult()
-                    {
-                        Type = response.IsSuccessStatusCode ? XMRestResultType.Success : XMRestResultType.Error,
-                        Message = string.Empty,
-                        JsonData = dataResult
-                    };
+                if (string.IsNullOrEmpty(jsonContent) == false)
+                {
+                    var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                    request.Content = content;
                 }
-            }
-            catch (Exception ex)
-            {
-                return new XMRestResult { Message = ex.Message, Type = XMRestResultType.Error };
+
+                if (string.IsNullOrEmpty(AuthorizationToken) == false)
+                {
+                    request.Headers.Add(AuthorizationHeaderName, AuthorizationToken);
+                }
+                if (headers != null && headers.Any())
+                {
+                    headers.ToList().ForEach(h => request.Headers.Add(h.Key, h.Value));
+                }
+
+                var response = await client.SendAsync(request);
+                var dataResult = response.Content.ReadAsStringAsync().Result;
+                //var result = JsonConvert.DeserializeObject<ConnectionResult<T>>(dataResult);
+                return new XMRestResult()
+                {
+                    Type = response.IsSuccessStatusCode ? XMRestResultType.Success : XMRestResultType.Error,
+                    Message = string.Empty,
+                    JsonData = dataResult
+                };
             }
         }
 
-        #region ASYNCHRONOUS
         /// <summary>
-        /// Gets the item asynchronous.
+        /// Deserializes the data. It makes a json conversion by default.
+        /// </summary>
+        /// <typeparam name="TReturn">The type of the return.</typeparam>
+        /// <param name="data">The data.</param>
+        /// <returns></returns>
+        public virtual TReturn DeserializeData<TReturn>(string data)
+        {
+            return JsonConvert.DeserializeObject<TReturn>(data);
+        }
+
+        /// <summary>
+        /// Serializes the data. It makes a json conversion by default.
+        /// </summary>
+        /// <param name="dataObj">The data object.</param>
+        /// <returns></returns>
+        public virtual string SerializeData(object dataObj)
+        {
+            return JsonConvert.SerializeObject(dataObj);
+        }
+
+        /// <summary>
+        /// Tests the service.
+        /// </summary>
+        /// <returns></returns>
+        public XMRestResult TestService()
+        {
+            return Task.Run(async () =>
+            {
+                var _url = GetApiUrl(HttpMethod.Get);
+                return await RestRequest(null, _url.ToString(), null, 20, HttpMethod.Get);
+            }).GetAwaiter().GetResult();
+        }
+
+        #region SYNCHRONOUS
+
+
+
+        /// <summary>
+        /// Gets the item.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public T GetItemAsync(string id)
+        public T GetItem(string id)
         {
             return Task.Run(async () =>
              {
-                 return await GetItem(id);
+                 return await GetItemAsync(id);
              }).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Gets the item asynchronous.
+        /// Gets the item.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <param name="page">The page.</param>
         /// <returns></returns>
-        public T GetItemAsync(Func<T, bool> predicate, int page = -1)
+        public T GetItem(Func<T, bool> predicate, int page = -1)
         {
             return Task.Run(async () =>
             {
-                return await GetItem(predicate, page);
+                return await GetItemAsync(predicate, page);
             }).GetAwaiter().GetResult();
         }
 
 
         /// <summary>
-        /// Gets all items asynchronous.
+        /// Gets all items.
         /// </summary>
         /// <param name="page">The page.</param>
         /// <returns></returns>
-        public IEnumerable<T> GetAllItemsAsync(int page = -1)
+        public IEnumerable<T> GetAllItems(int page = -1)
         {
             return Task.Run(async () =>
             {
-                return await GetAllItems(page);
+                return await GetAllItemsAsync(page);
             }).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Gets the items asynchronous.
+        /// Gets the items.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <param name="page">The page.</param>
         /// <returns></returns>
-        public IEnumerable<T> GetItemsAsync(Func<T, bool> predicate, int page = -1)
+        public IEnumerable<T> GetItems(Func<T, bool> predicate, int page = -1)
         {
             return Task.Run(async () =>
             {
-                return await GetItems(predicate, page);
+                return await GetItemsAsync(predicate, page);
             }).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Updates or saves new item asynchronous.
+        /// Updates or saves new item.
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns></returns>
-        public bool SaveItemAsync(T item)
+        public bool SaveItem(T item)
         {
             return Task.Run(async () =>
             {
-                return await SaveItem(item);
+                return await SaveItemAsync(item);
             }).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Deletes the item asynchronous.
+        /// Deletes the item.
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns></returns>
-        public bool DeleteItemAsync(T item)
+        public bool DeleteItem(T item)
         {
             return Task.Run(async () =>
             {
-                return await DeleteItem(item);
+                return await DeleteItemAsync(item);
             }).GetAwaiter().GetResult();
         }
         /// <summary>
-        /// Deletes the item asynchronous.
+        /// Deletes the item.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public bool DeleteItemAsync(string id)
+        public bool DeleteItem(string id)
         {
             return Task.Run(async () =>
             {
-                return await DeleteItem(id);
+                return await DeleteItemAsync(id);
             }).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Deletes the item asynchronous.
+        /// Deletes the item.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
-        public bool DeleteItemAsync(Func<T, bool> predicate)
+        public bool DeleteItem(Func<T, bool> predicate)
         {
             return Task.Run(async () =>
             {
-                return await DeleteItem(predicate);
+                return await DeleteItemAsync(predicate);
             }).GetAwaiter().GetResult();
         }
         #endregion

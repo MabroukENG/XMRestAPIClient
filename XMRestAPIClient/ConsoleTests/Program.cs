@@ -12,15 +12,11 @@ namespace ConsoleTests
     {
         static void Main(string[] args)
         {
-            SetAPISettings();
+            //  SetAPISettings();
             var service = new SymbolService();
             Console.ReadKey();
         }
-        private static void SetAPISettings()
-        {
-            XMRestSettings.ApiVersion = 1;
-            XMRestSettings.BaseUrl = "http://192.168.2.215:2080/";
-        }
+
     }
 
     public class RawMaterial : IXMModel
@@ -50,12 +46,22 @@ namespace ConsoleTests
 
     }
 
-    public class SymbolService : XMBaseDataService<Symbol>
+    public class BaseService<T> : XMBaseDataService<T> where T : IXMModel
     {
-        protected override string ApiName => "symbols";
+        public override int ApiVersion => 1;
+        public override string BaseAPIUrl => "";
+        public BaseService():base()
+        {
+
+        }
+    }
+
+    public class SymbolService : BaseService<Symbol>
+    {
+        public override string ApiName => "symbols";
         public SymbolService()
         {
-            SaveItem(new Symbol()
+            SaveItemAsync(new Symbol()
             {
                 Id = "6be58520-e45e-476d-89f0-c05f3c8e86e6",
                 Description = "No desk",
@@ -63,18 +69,19 @@ namespace ConsoleTests
                 SymbolFileName = "no file",
                 SymbolNumber = 25,
                 SymbolSize = 60
-            }).ContinueWith(p => {
+            }).ContinueWith(p =>
+            {
 
-                GetAllItems().ContinueWith(i=> { });
+                GetAllItemsAsync().ContinueWith(i => { });
             });
 
         }
 
-           }
+    }
 
     public class RawMaterialService : XMBaseDataService<RawMaterial>
     {
-        protected override string ApiName => "rawMaterials";
+        public override string ApiName => "rawMaterials";
         public RawMaterialService()
         {
             GetData();
@@ -83,10 +90,10 @@ namespace ConsoleTests
 
         private async void GetData()
         {
-            var lst = await this.GetAllItems();
+            var lst = await this.GetAllItemsAsync();
             var item = lst.FirstOrDefault();
             item.SupplierPartNumber = "333";
-            var res = await SaveItem(item);
+            var res = await SaveItemAsync(item);
         }
     }
 }
