@@ -377,10 +377,11 @@ namespace XMRestAPIClient
                     request.Content = content;
                 }
 
-                if (string.IsNullOrEmpty(AuthorizationToken) == false)
+                if (UsesAuthorizationToken(method) == true)
                 {
                     request.Headers.Add(AuthorizationHeaderName, AuthorizationToken);
                 }
+
                 if (headers != null && headers.Any())
                 {
                     headers.ToList().ForEach(h => request.Headers.Add(h.Key, h.Value));
@@ -396,6 +397,18 @@ namespace XMRestAPIClient
                     JsonData = dataResult
                 };
             }
+        }
+
+        /// <summary>
+        /// Determines whether the specified HTTP method uses an authorization token.
+        /// </summary>
+        /// <param name="httpMethod">The HTTP method.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified HTTP method [uses authorization token] ; otherwise, <c>false</c>.
+        /// </returns>
+        public virtual bool UsesAuthorizationToken(HttpMethod httpMethod)
+        {
+            return false;
         }
 
         /// <summary>
