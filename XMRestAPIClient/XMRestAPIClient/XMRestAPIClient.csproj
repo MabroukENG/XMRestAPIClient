@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -13,16 +13,16 @@
     <RepositoryUrl>https://github.com/MabroukENG/XMRestAPIClient</RepositoryUrl>
     <AssemblyVersion>1.0.0.13</AssemblyVersion>
     <FileVersion>1.0.0.13</FileVersion>
-    <Version>1.1.4</Version>
+    <Version>1.1.7</Version>
     <PackageId>Xamabrouk.RestHelper</PackageId>
-    <PackageReleaseNotes>UPDATE : Generic type of the Identifier property in the IXModel</PackageReleaseNotes>
+    <PackageReleaseNotes>UPDATE : Name of the Identifier property in the IXModel</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl>https://github.com/MabroukENG/Xamabrouk/blob/master/LICENSE</PackageLicenseUrl>
     <PackageTags>.NET API Rest Client GET POST Xamarin Core</PackageTags>
     <ReleaseVersion>1.1.5</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
-    <PackageVersion>1.1.6</PackageVersion>
+    <PackageVersion>1.1.7</PackageVersion>
     <Owners>Mabrouk Mahdhi</Owners>
   </PropertyGroup>
 

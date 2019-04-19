@@ -6,6 +6,6 @@ namespace XMRestAPIClient
 {
     public interface IXMModel<T> where T:struct
     {
-        T Identifier { get; set; }
+        T Id { get; set; }
     }
 }

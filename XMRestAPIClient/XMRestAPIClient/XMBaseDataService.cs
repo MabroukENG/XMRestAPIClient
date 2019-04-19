@@ -103,7 +103,7 @@ namespace XMRestAPIClient
         {
             try
             {
-                return await DeleteItemAsync(item.Identifier);
+                return await DeleteItemAsync(item.Id);
             }
             catch (Exception ex)
             {
@@ -145,7 +145,7 @@ namespace XMRestAPIClient
             try
             {
                 var item = await GetItemAsync(predicate);
-                return await DeleteItemAsync(item.Identifier);
+                return await DeleteItemAsync(item.Id);
             }
             catch (Exception ex)
             {
@@ -251,7 +251,7 @@ namespace XMRestAPIClient
                     return false;
 
                 var jsonRequest = SerializeData(item);
-                if (string.IsNullOrEmpty($"{(await GetItemAsync(item.Identifier))?.Identifier}"))
+                if (string.IsNullOrEmpty($"{(await GetItemAsync(item.Id))?.Id}"))
                 {
                     var _postUrl = GetApiUrl(HttpMethod.Post);
                     var postResult = await PostToDataServer(jsonRequest, _postUrl.ToString());
