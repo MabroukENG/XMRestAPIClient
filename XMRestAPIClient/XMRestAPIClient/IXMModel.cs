@@ -4,9 +4,8 @@ using System.Text;
 
 namespace XMRestAPIClient
 {
-    public interface IXMModel
+    public interface IXMModel<T> where T:struct
     {
-        string Id { get; set; }
-        string Name { get; set; }
+        T Identifier { get; set; }
     }
 }

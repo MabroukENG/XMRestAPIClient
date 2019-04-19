@@ -9,14 +9,14 @@ namespace XMRestAPIClient
     /// Defines an XMRestService.
     /// </summary>
     /// <typeparam name="T">The model</typeparam>
-    public interface IXMDataService<T> where T : IXMModel
+    public interface IXMDataService<T,TIdentifier> where T : IXMModel<TIdentifier> where TIdentifier :struct
     {
         /// <summary>
         /// Gets the item.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        Task<T> GetItemAsync(string id);
+        Task<T> GetItemAsync(TIdentifier id);
         /// <summary>
         /// Gets the item.
         /// </summary>
@@ -51,7 +51,7 @@ namespace XMRestAPIClient
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        Task<bool> DeleteItemAsync(string id);
+        Task<bool> DeleteItemAsync(TIdentifier id);
         /// <summary>
         /// Deletes the item.
         /// </summary>
@@ -67,7 +67,7 @@ namespace XMRestAPIClient
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        T GetItem(string id);
+        T GetItem(TIdentifier id);
 
         /// <summary>
         /// Gets the item.
@@ -112,7 +112,7 @@ namespace XMRestAPIClient
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        bool DeleteItem(string id);
+        bool DeleteItem(TIdentifier id);
 
         /// <summary>
         /// Deletes the item.

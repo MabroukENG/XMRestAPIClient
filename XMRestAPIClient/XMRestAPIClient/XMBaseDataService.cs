@@ -15,7 +15,7 @@ namespace XMRestAPIClient
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="XMRestAPIClient.IXMDataService{T}" />
-    public class XMBaseDataService<T> : IXMDataService<T> where T : IXMModel
+    public class XMBaseDataService<T,TIdentifier> : IXMDataService<T,TIdentifier> where T : IXMModel<TIdentifier> where TIdentifier:struct
     {
         /// <summary>
         /// Gets the name of the API.
@@ -55,7 +55,7 @@ namespace XMRestAPIClient
         public virtual int ApiVersion { get; } = 1;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="XMBaseDataService{T}"/> class.
+        /// Initializes a new instance of the <see cref="T:XMRestAPIClient.XMBaseDataService`2"/> class.
         /// </summary>
         public XMBaseDataService()
         {
@@ -63,11 +63,11 @@ namespace XMRestAPIClient
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="XMBaseDataService{T}"/> class.
+        /// Initializes a new instance of the <see cref="T:XMRestAPIClient.XMBaseDataService`2"/> class.
         /// </summary>
-        /// <param name="baseUrl">The base URL.</param>
-        /// <param name="apiVersion">The API version.</param>
-        /// <param name="authorizationToken">The authorization token.</param>
+        /// <param name="baseUrl">Base URL.</param>
+        /// <param name="apiVersion">API version.</param>
+        /// <param name="authorizationToken">Authorization token.</param>
         public XMBaseDataService(string baseUrl, int apiVersion, string authorizationToken) : this()
         {
             BaseAPIUrl = baseUrl;
@@ -85,11 +85,11 @@ namespace XMRestAPIClient
         /// <param name="id">The identifier.</param>
         /// <param name="apiParams">The API parameters.</param>
         /// <returns></returns>
-        public virtual Uri GetApiUrl(HttpMethod httpMethod, string id = "", params Tuple<string, string>[] apiParams)
+        public virtual Uri GetApiUrl(HttpMethod httpMethod, TIdentifier id = default(TIdentifier), params Tuple<string, string>[] apiParams)
         {
             var _version = ApiVersion == -1 ? "" : $"/v{ApiVersion}";
-            var _id = string.IsNullOrEmpty(id) ? "/" : $"/{id}";
-            var _uri = new Uri(new Uri($"{BaseAPIUrl}{(BaseAPIUrl.EndsWith("/") ? "" : "/")}api{_version}/{ApiName}{_id}").ToString());
+            var _id = string.IsNullOrEmpty($"{id}") ? "/" : $"/{id}";
+            var _uri = new Uri(new Uri($"{BaseAPIUrl}{(BaseAPIUrl.EndsWith("/",StringComparison.OrdinalIgnoreCase) ? "" : "/")}api{_version}/{ApiName}{_id}").ToString());
             return _uri;
         }
 
@@ -103,7 +103,7 @@ namespace XMRestAPIClient
         {
             try
             {
-                return await DeleteItemAsync(item.Id);
+                return await DeleteItemAsync(item.Identifier);
             }
             catch (Exception ex)
             {
@@ -117,11 +117,11 @@ namespace XMRestAPIClient
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public virtual async Task<bool> DeleteItemAsync(string id)
+        public virtual async Task<bool> DeleteItemAsync(TIdentifier id)
         {
             try
             {
-                if (string.IsNullOrEmpty(id))
+                if (string.IsNullOrEmpty($"{id}"))
                     return false;
                 var _url = GetApiUrl(HttpMethod.Delete, id);
                 //new Uri(new Uri($"{BaseUrl}{(BaseUrl.EndsWith("/") ? "" : "/")}api/v{ApiVersion}/{ApiName}/{id}").ToString());
@@ -145,7 +145,7 @@ namespace XMRestAPIClient
             try
             {
                 var item = await GetItemAsync(predicate);
-                return await DeleteItemAsync(item.Id);
+                return await DeleteItemAsync(item.Identifier);
             }
             catch (Exception ex)
             {
@@ -177,11 +177,11 @@ namespace XMRestAPIClient
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public virtual async Task<T> GetItemAsync(string id)
+        public virtual async Task<T> GetItemAsync(TIdentifier id)
         {
             try
             {
-                if (string.IsNullOrEmpty(id))
+                if (string.IsNullOrEmpty($"{id}"))
                     return default(T);
                 var _url = GetApiUrl(HttpMethod.Get, id);
                 var getResult = await GetFromDataServer(string.Empty, _url.ToString());
@@ -250,11 +250,8 @@ namespace XMRestAPIClient
                 if (item == null)
                     return false;
 
-                if (string.IsNullOrEmpty(item.Id) == true)
-                    item.Id = Guid.NewGuid().ToString();
-
                 var jsonRequest = SerializeData(item);
-                if (string.IsNullOrEmpty((await GetItemAsync(item.Id))?.Id))
+                if (string.IsNullOrEmpty($"{(await GetItemAsync(item.Identifier))?.Identifier}"))
                 {
                     var _postUrl = GetApiUrl(HttpMethod.Post);
                     var postResult = await PostToDataServer(jsonRequest, _postUrl.ToString());
@@ -454,7 +451,7 @@ namespace XMRestAPIClient
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public T GetItem(string id)
+        public T GetItem(TIdentifier id)
         {
             return Task.Run(async () =>
              {
@@ -534,7 +531,7 @@ namespace XMRestAPIClient
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public bool DeleteItem(string id)
+        public bool DeleteItem(TIdentifier id)
         {
             return Task.Run(async () =>
             {
