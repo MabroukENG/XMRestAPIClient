@@ -85,10 +85,10 @@ namespace XMRestAPIClient
         /// <param name="id">The identifier.</param>
         /// <param name="apiParams">The API parameters.</param>
         /// <returns></returns>
-        public virtual Uri GetApiUrl(HttpMethod httpMethod, TIdentifier id = default(TIdentifier), params Tuple<string, string>[] apiParams)
+        public virtual Uri GetApiUrl(HttpMethod httpMethod, TIdentifier? id=null, params Tuple<string, string>[] apiParams)
         {
             var _version = ApiVersion == -1 ? "" : $"/v{ApiVersion}";
-            var _id = string.IsNullOrEmpty($"{id}") ? "/" : $"/{id}";
+            var _id = id==null ? "/" : $"/{id}";
             var _uri = new Uri(new Uri($"{BaseAPIUrl}{(BaseAPIUrl.EndsWith("/",StringComparison.OrdinalIgnoreCase) ? "" : "/")}api{_version}/{ApiName}{_id}").ToString());
             return _uri;
         }

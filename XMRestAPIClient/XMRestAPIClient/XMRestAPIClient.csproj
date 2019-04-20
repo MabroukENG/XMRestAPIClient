@@ -15,14 +15,14 @@
     <FileVersion>1.0.0.13</FileVersion>
     <Version>1.1.7</Version>
     <PackageId>Xamabrouk.RestHelper</PackageId>
-    <PackageReleaseNotes>UPDATE : Name of the Identifier property in the IXModel</PackageReleaseNotes>
+    <PackageReleaseNotes>BUG FIXED : GetAllItemsAsync issue fixed</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl>https://github.com/MabroukENG/Xamabrouk/blob/master/LICENSE</PackageLicenseUrl>
     <PackageTags>.NET API Rest Client GET POST Xamarin Core</PackageTags>
     <ReleaseVersion>1.1.5</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
-    <PackageVersion>1.1.7</PackageVersion>
+    <PackageVersion>1.1.9</PackageVersion>
     <Owners>Mabrouk Mahdhi</Owners>
   </PropertyGroup>
 
