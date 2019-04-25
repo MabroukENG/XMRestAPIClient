@@ -11,18 +11,18 @@
     <PackageIconUrl>http://xamabrouk.com/images/ic_clean.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/MabroukENG/XMRestAPIClient</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MabroukENG/XMRestAPIClient</RepositoryUrl>
-    <AssemblyVersion>1.0.0.13</AssemblyVersion>
-    <FileVersion>1.0.0.13</FileVersion>
-    <Version>1.1.7</Version>
+    <AssemblyVersion>1.0.0.14</AssemblyVersion>
+    <FileVersion>1.0.0.14</FileVersion>
+    <Version>1.1.10</Version>
     <PackageId>Xamabrouk.RestHelper</PackageId>
-    <PackageReleaseNotes>BUG FIXED : GetAllItemsAsync issue fixed</PackageReleaseNotes>
+    <PackageReleaseNotes>UPDTAE : Paging option added on queries</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl>https://github.com/MabroukENG/Xamabrouk/blob/master/LICENSE</PackageLicenseUrl>
     <PackageTags>.NET API Rest Client GET POST Xamarin Core</PackageTags>
     <ReleaseVersion>1.1.5</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
-    <PackageVersion>1.1.9</PackageVersion>
+    <PackageVersion>1.1.10</PackageVersion>
     <Owners>Mabrouk Mahdhi</Owners>
   </PropertyGroup>
 

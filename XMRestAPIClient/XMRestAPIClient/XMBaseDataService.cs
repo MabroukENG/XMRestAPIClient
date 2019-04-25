@@ -15,7 +15,7 @@ namespace XMRestAPIClient
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="XMRestAPIClient.IXMDataService{T}" />
-    public class XMBaseDataService<T,TIdentifier> : IXMDataService<T,TIdentifier> where T : IXMModel<TIdentifier> where TIdentifier:struct
+    public class XMBaseDataService<T, TIdentifier> : IXMDataService<T, TIdentifier> where T : IXMModel<TIdentifier> where TIdentifier : struct
     {
         /// <summary>
         /// Gets the name of the API.
@@ -85,11 +85,12 @@ namespace XMRestAPIClient
         /// <param name="id">The identifier.</param>
         /// <param name="apiParams">The API parameters.</param>
         /// <returns></returns>
-        public virtual Uri GetApiUrl(HttpMethod httpMethod, TIdentifier? id=null, params Tuple<string, string>[] apiParams)
+        public virtual Uri GetApiUrl(HttpMethod httpMethod, TIdentifier? id = null, int page = 0, int count = 0, params Tuple<string, string>[] apiParams)
         {
             var _version = ApiVersion == -1 ? "" : $"/v{ApiVersion}";
-            var _id = id==null ? "/" : $"/{id}";
-            var _uri = new Uri(new Uri($"{BaseAPIUrl}{(BaseAPIUrl.EndsWith("/",StringComparison.OrdinalIgnoreCase) ? "" : "/")}api{_version}/{ApiName}{_id}").ToString());
+            var _id = id == null ? "/" : $"/{id}";
+            var _pageFilter = _id == "/" ? (page > 0 ? $"{page}/{count}" : "") : _id;
+            var _uri = new Uri(new Uri($"{BaseAPIUrl}{(BaseAPIUrl.EndsWith("/", StringComparison.OrdinalIgnoreCase) ? "" : "/")}api{_version}/{ApiName}{_pageFilter}").ToString());
             return _uri;
         }
 
@@ -154,15 +155,15 @@ namespace XMRestAPIClient
         }
 
         /// <summary>
-        /// Gets items per page. Gets all items if page=-1 (default).
+        /// Gets items per page. Gets all items if page=0 (default).
         /// </summary>
         /// <param name="page">The page. </param>
         /// <returns></returns>
-        public virtual async Task<IEnumerable<T>> GetAllItemsAsync(int page = -1)
+        public virtual async Task<IEnumerable<T>> GetAllItemsAsync(int page = 0, int count = 0)
         {
             try
             {
-                var _url = GetApiUrl(HttpMethod.Get);
+                var _url = GetApiUrl(HttpMethod.Get, page: page, count: count);
                 var getAllResult = await GetFromDataServer(string.Empty, _url.ToString());
                 return DeserializeData<List<T>>(getAllResult?.JsonData);
             }
@@ -199,11 +200,11 @@ namespace XMRestAPIClient
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public virtual async Task<T> GetItemAsync(Func<T, bool> predicate, int page = -1)
+        public virtual async Task<T> GetItemAsync(Func<T, bool> predicate)
         {
             try
             {
-                var data = await GetAllItemsAsync(page);
+                var data = await GetAllItemsAsync();
                 if (data == null || data.Any() == false)
                     return default(T);
 
@@ -221,11 +222,11 @@ namespace XMRestAPIClient
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public virtual async Task<IEnumerable<T>> GetItemsAsync(Func<T, bool> predicate, int page = -1)
+        public virtual async Task<IEnumerable<T>> GetItemsAsync(Func<T, bool> predicate)
         {
             try
             {
-                var data = await GetAllItemsAsync(page);
+                var data = await GetAllItemsAsync();
                 if (data == null || data.Any() == false)
                     return null;
 
@@ -463,13 +464,12 @@ namespace XMRestAPIClient
         /// Gets the item.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
-        /// <param name="page">The page.</param>
         /// <returns></returns>
-        public T GetItem(Func<T, bool> predicate, int page = -1)
+        public T GetItem(Func<T, bool> predicate)
         {
             return Task.Run(async () =>
             {
-                return await GetItemAsync(predicate, page);
+                return await GetItemAsync(predicate);
             }).GetAwaiter().GetResult();
         }
 
@@ -478,12 +478,13 @@ namespace XMRestAPIClient
         /// Gets all items.
         /// </summary>
         /// <param name="page">The page.</param>
+        /// <param name="count">The count.</param>
         /// <returns></returns>
-        public IEnumerable<T> GetAllItems(int page = -1)
+        public IEnumerable<T> GetAllItems(int page = 0, int count = 0)
         {
             return Task.Run(async () =>
             {
-                return await GetAllItemsAsync(page);
+                return await GetAllItemsAsync(page, count);
             }).GetAwaiter().GetResult();
         }
 
@@ -491,13 +492,12 @@ namespace XMRestAPIClient
         /// Gets the items.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
-        /// <param name="page">The page.</param>
         /// <returns></returns>
-        public IEnumerable<T> GetItems(Func<T, bool> predicate, int page = -1)
+        public IEnumerable<T> GetItems(Func<T, bool> predicate)
         {
             return Task.Run(async () =>
             {
-                return await GetItemsAsync(predicate, page);
+                return await GetItemsAsync(predicate);
             }).GetAwaiter().GetResult();
         }
 

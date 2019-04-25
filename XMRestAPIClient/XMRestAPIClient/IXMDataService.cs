@@ -9,7 +9,7 @@ namespace XMRestAPIClient
     /// Defines an XMRestService.
     /// </summary>
     /// <typeparam name="T">The model</typeparam>
-    public interface IXMDataService<T,TIdentifier> where T : IXMModel<TIdentifier> where TIdentifier :struct
+    public interface IXMDataService<T, TIdentifier> where T : IXMModel<TIdentifier> where TIdentifier : struct
     {
         /// <summary>
         /// Gets the item.
@@ -22,18 +22,20 @@ namespace XMRestAPIClient
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
-        Task<T> GetItemAsync(Func<T, bool> predicate, int page = -1);
+        Task<T> GetItemAsync(Func<T, bool> predicate);
         /// <summary>
-        /// Gets all items.
+        /// Gets all items asynchronous.
         /// </summary>
+        /// <param name="page">The page.</param>
+        /// <param name="count">The count.</param>
         /// <returns></returns>
-        Task<IEnumerable<T>> GetAllItemsAsync(int page = -1);
+        Task<IEnumerable<T>> GetAllItemsAsync(int page = 0, int count = 0);
         /// <summary>
         /// Gets the items.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
-        Task<IEnumerable<T>> GetItemsAsync(Func<T, bool> predicate, int page = -1);
+        Task<IEnumerable<T>> GetItemsAsync(Func<T, bool> predicat);
         /// <summary>
         /// Saves the item.
         /// </summary>
@@ -73,24 +75,23 @@ namespace XMRestAPIClient
         /// Gets the item.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
-        /// <param name="page">The page.</param>
         /// <returns></returns>
-        T GetItem(Func<T, bool> predicate, int page = -1);
+        T GetItem(Func<T, bool> predicate);
 
         /// <summary>
         /// Gets all items.
         /// </summary>
         /// <param name="page">The page.</param>
+        /// <param name="count">The count.</param>
         /// <returns></returns>
-        IEnumerable<T> GetAllItems(int page = -1);
+        IEnumerable<T> GetAllItems(int page = 0, int count = 0);
 
         /// <summary>
         /// Gets the items.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
-        /// <param name="page">The page.</param>
         /// <returns></returns>
-        IEnumerable<T> GetItems(Func<T, bool> predicate, int page = -1);
+        IEnumerable<T> GetItems(Func<T, bool> predicate);
 
 
         /// <summary>
