@@ -61,6 +61,18 @@ namespace XMRestAPIClient
         /// <returns></returns>
         Task<bool> DeleteItemAsync(Func<T, bool> predicate);
 
+        /// <summary>
+        /// Counts items asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        Task<long> CountAsync();
+
+        /// <summary>
+        /// Counts items asynchronous.
+        /// </summary>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns></returns>
+        Task<long> CountAsync(Func<T, bool> predicate);
 
         // ASYNC METHODS 
 
@@ -121,6 +133,19 @@ namespace XMRestAPIClient
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
         bool DeleteItem(Func<T, bool> predicate);
+
+        /// <summary>
+        /// Counts the items.
+        /// </summary>
+        /// <returns></returns>
+        long Count();
+
+        /// <summary>
+        /// Counts the specified predicate.
+        /// </summary>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns></returns>
+        long Count(Func<T, bool> predicate);
     }
 }
 

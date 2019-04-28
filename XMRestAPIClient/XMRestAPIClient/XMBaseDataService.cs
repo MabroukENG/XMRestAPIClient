@@ -83,14 +83,27 @@ namespace XMRestAPIClient
         /// </summary>
         /// <param name="httpMethod">The HTTP method.</param>
         /// <param name="id">The identifier.</param>
+        /// <param name="page">The page.</param>
+        /// <param name="count">The count.</param>
         /// <param name="apiParams">The API parameters.</param>
         /// <returns></returns>
         public virtual Uri GetApiUrl(HttpMethod httpMethod, TIdentifier? id = null, int page = 0, int count = 0, params Tuple<string, string>[] apiParams)
         {
             var _version = ApiVersion == -1 ? "" : $"/v{ApiVersion}";
             var _id = id == null ? "/" : $"/{id}";
-            var _pageFilter = _id == "/" ? (page > 0 ? $"{page}/{count}" : "") : _id;
+            var _pageFilter = _id == "/" ? (page > 0 ? $"/{page}/{count}" : "") : _id;
             var _uri = new Uri(new Uri($"{BaseAPIUrl}{(BaseAPIUrl.EndsWith("/", StringComparison.OrdinalIgnoreCase) ? "" : "/")}api{_version}/{ApiName}{_pageFilter}").ToString());
+            return _uri;
+        }
+
+        /// <summary>
+        /// Gets the count API URL.
+        /// </summary>
+        /// <returns></returns>
+        public virtual Uri GetCountApiUrl()
+        {
+            var _version = ApiVersion == -1 ? "" : $"/v{ApiVersion}";
+            var _uri = new Uri(new Uri($"{BaseAPIUrl}{(BaseAPIUrl.EndsWith("/", StringComparison.OrdinalIgnoreCase) ? "" : "/")}api{_version}/{ApiName}/count").ToString());
             return _uri;
         }
 
@@ -238,6 +251,7 @@ namespace XMRestAPIClient
             }
         }
 
+
         /// <summary>
         /// Updates (or saves a new) item. If the Id was not set, a new GUID will be generated.
         /// </summary>
@@ -246,7 +260,7 @@ namespace XMRestAPIClient
         /// <exception cref="NotImplementedException"></exception>
         public virtual async Task<bool> SaveItemAsync(T item)
         {
-            try
+            try 
             {
                 if (item == null)
                     return false;
@@ -267,6 +281,43 @@ namespace XMRestAPIClient
                 return false;
             }
         }
+
+        /// <summary>
+        /// Counts items asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        public virtual async Task<long> CountAsync()
+        {
+            try
+            {
+                var _uri = GetCountApiUrl();
+                var putResult = await PutToDataServer(null, _uri.ToString());
+                return JsonConvert.DeserializeObject<long>(putResult.JsonData);
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Counts items asynchronous.
+        /// </summary>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns></returns>
+        public virtual async Task<long> CountAsync(Func<T, bool> predicate)
+        {
+            try
+            {
+                var items = await GetItemsAsync(predicate);
+                return items?.Count() ?? 0;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
 
 
         /// <summary>
@@ -549,6 +600,23 @@ namespace XMRestAPIClient
             return Task.Run(async () =>
             {
                 return await DeleteItemAsync(predicate);
+            }).GetAwaiter().GetResult();
+        }
+
+
+        public long Count()
+        {
+            return Task.Run(async () =>
+            {
+                return await CountAsync();
+            }).GetAwaiter().GetResult();
+        }
+
+        public long Count(Func<T, bool> predicate)
+        {
+            return Task.Run(async () =>
+            {
+                return await CountAsync(predicate);
             }).GetAwaiter().GetResult();
         }
         #endregion
