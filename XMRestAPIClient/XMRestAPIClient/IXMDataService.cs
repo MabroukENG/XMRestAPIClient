@@ -72,7 +72,7 @@ namespace XMRestAPIClient
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
-        Task<long> CountAsync(Func<T, bool> predicate);
+        Task<long> CountAsync(Func<dynamic, bool> predicate);
 
         // ASYNC METHODS 
 
@@ -145,7 +145,7 @@ namespace XMRestAPIClient
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
-        long Count(Func<T, bool> predicate);
+        long Count(Func<dynamic, bool> predicate);
     }
 }
 

@@ -100,7 +100,7 @@ namespace XMRestAPIClient
         /// Gets the count API URL.
         /// </summary>
         /// <returns></returns>
-        public virtual Uri GetCountApiUrl()
+        public virtual Uri GetCountApiUrl(string predicateText = "")
         {
             var _version = ApiVersion == -1 ? "" : $"/v{ApiVersion}";
             var _uri = new Uri(new Uri($"{BaseAPIUrl}{(BaseAPIUrl.EndsWith("/", StringComparison.OrdinalIgnoreCase) ? "" : "/")}api{_version}/{ApiName}/count").ToString());
@@ -186,6 +186,20 @@ namespace XMRestAPIClient
             }
         }
 
+        public virtual async Task<TResult> GetAllItemsAsync<TResult>(int page = 0, int count = 0)
+        {
+            try
+            {
+                var _url = GetApiUrl(HttpMethod.Get, page: page, count: count);
+                var getAllResult = await GetFromDataServer(string.Empty, _url.ToString());
+                return DeserializeData<TResult>(getAllResult?.JsonData);
+            }
+            catch (Exception ex)
+            {
+                return default(TResult);
+            }
+        }
+
         /// <summary>
         /// Gets the item.
         /// </summary>
@@ -260,7 +274,7 @@ namespace XMRestAPIClient
         /// <exception cref="NotImplementedException"></exception>
         public virtual async Task<bool> SaveItemAsync(T item)
         {
-            try 
+            try
             {
                 if (item == null)
                     return false;
@@ -291,7 +305,7 @@ namespace XMRestAPIClient
             try
             {
                 var _uri = GetCountApiUrl();
-                var putResult = await PutToDataServer(null, _uri.ToString());
+                var putResult = await GetFromDataServer(null, _uri.ToString());
                 return JsonConvert.DeserializeObject<long>(putResult.JsonData);
             }
             catch (Exception ex)
@@ -305,12 +319,14 @@ namespace XMRestAPIClient
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
-        public virtual async Task<long> CountAsync(Func<T, bool> predicate)
+        public virtual async Task<long> CountAsync(Func<dynamic, bool> predicate)
         {
             try
             {
-                var items = await GetItemsAsync(predicate);
-                return items?.Count() ?? 0;
+                var _uri = GetCountApiUrl(predicate.ToStringLamda());
+                var jsonRequest = SerializeData(predicate.ToStringLamda());
+                var putResult = await GetFromDataServer(jsonRequest, _uri.ToString());
+                return JsonConvert.DeserializeObject<long>(putResult.JsonData);
             }
             catch (Exception ex)
             {
@@ -481,18 +497,7 @@ namespace XMRestAPIClient
             return JsonConvert.SerializeObject(dataObj);
         }
 
-        /// <summary>
-        /// Tests the service.
-        /// </summary>
-        /// <returns></returns>
-        public XMRestResult TestService()
-        {
-            return Task.Run(async () =>
-            {
-                var _url = GetApiUrl(HttpMethod.Get);
-                return await RestRequest(null, _url.ToString(), null, 20, HttpMethod.Get);
-            }).GetAwaiter().GetResult();
-        }
+       
 
         #region SYNCHRONOUS
 
@@ -536,6 +541,21 @@ namespace XMRestAPIClient
             return Task.Run(async () =>
             {
                 return await GetAllItemsAsync(page, count);
+            }).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Gets all items.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="page">The page.</param>
+        /// <param name="count">The count.</param>
+        /// <returns></returns>
+        public TResult GetAllItems<TResult>(int page = 0, int count = 0)
+        {
+            return Task.Run(async () =>
+            {
+                return await GetAllItemsAsync<TResult>(page, count);
             }).GetAwaiter().GetResult();
         }
 
@@ -612,7 +632,7 @@ namespace XMRestAPIClient
             }).GetAwaiter().GetResult();
         }
 
-        public long Count(Func<T, bool> predicate)
+        public long Count(Func<dynamic, bool> predicate)
         {
             return Task.Run(async () =>
             {

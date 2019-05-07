@@ -9,20 +9,20 @@
     <Description>Provides a full and clean solution to POST, GET,PUT or DELETE data to server using a Rest API.</Description>
     <Copyright>Copyright (c) Mabrouk Mahdhi 2019</Copyright>
     <PackageIconUrl>http://xamabrouk.com/images/ic_clean.png</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/MabroukENG/XMRestAPIClient</PackageProjectUrl>
+    <PackageProjectUrl>https://www.xamabrouk.com/2019/05/07/xamabrouk-resthelper/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MabroukENG/XMRestAPIClient</RepositoryUrl>
-    <AssemblyVersion>1.0.0.16</AssemblyVersion>
-    <FileVersion>1.0.0.16</FileVersion>
-    <Version>1.1.12</Version>
+    <AssemblyVersion>1.0.0.17</AssemblyVersion>
+    <FileVersion>1.0.0.17</FileVersion>
+    <Version>1.1.13</Version>
     <PackageId>Xamabrouk.RestHelper</PackageId>
-    <PackageReleaseNotes>UPDTAE : COUNT Api added</PackageReleaseNotes>
+    <PackageReleaseNotes>UPDTAE : New generic GetAllItems&lt;TResult&gt;() method added</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl>https://github.com/MabroukENG/Xamabrouk/blob/master/LICENSE</PackageLicenseUrl>
     <PackageTags>.NET API Rest Client GET POST Xamarin Core</PackageTags>
     <ReleaseVersion>1.1.5</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
-    <PackageVersion>1.1.12</PackageVersion>
+    <PackageVersion>1.1.13</PackageVersion>
     <Owners>Mabrouk Mahdhi</Owners>
   </PropertyGroup>
 
