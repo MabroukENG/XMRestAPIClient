@@ -280,7 +280,7 @@ namespace XMRestAPIClient
                     return false;
 
                 var jsonRequest = SerializeData(item);
-                if (string.IsNullOrEmpty($"{(await GetItemAsync(item.Id))?.Id}"))
+                if (string.IsNullOrEmpty($"{(await GetItemAsync(item.Id))?.Id}") == false)
                 {
                     var _postUrl = GetApiUrl(HttpMethod.Post);
                     var postResult = await PostToDataServer(jsonRequest, _postUrl.ToString());
@@ -497,7 +497,7 @@ namespace XMRestAPIClient
             return JsonConvert.SerializeObject(dataObj);
         }
 
-       
+
 
         #region SYNCHRONOUS
 

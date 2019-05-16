@@ -11,18 +11,18 @@
     <PackageIconUrl>http://xamabrouk.com/images/ic_clean.png</PackageIconUrl>
     <PackageProjectUrl>https://www.xamabrouk.com/2019/05/07/xamabrouk-resthelper/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MabroukENG/XMRestAPIClient</RepositoryUrl>
-    <AssemblyVersion>1.0.0.17</AssemblyVersion>
-    <FileVersion>1.0.0.17</FileVersion>
-    <Version>1.1.13</Version>
+    <AssemblyVersion>1.0.0.18</AssemblyVersion>
+    <FileVersion>1.0.0.18</FileVersion>
+    <Version>1.1.14</Version>
     <PackageId>Xamabrouk.RestHelper</PackageId>
-    <PackageReleaseNotes>UPDTAE : New generic GetAllItems&lt;TResult&gt;() method added</PackageReleaseNotes>
+    <PackageReleaseNotes>UPDATE : Issue in SaveItemAsync() fixed.</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl>https://github.com/MabroukENG/Xamabrouk/blob/master/LICENSE</PackageLicenseUrl>
     <PackageTags>.NET API Rest Client GET POST Xamarin Core</PackageTags>
     <ReleaseVersion>1.1.5</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
-    <PackageVersion>1.1.13</PackageVersion>
+    <PackageVersion>1.1.14</PackageVersion>
     <Owners>Mabrouk Mahdhi</Owners>
   </PropertyGroup>
 
